@@ -1,0 +1,33 @@
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--给实体类定义别名,方便，相当于一个类的缩写，不区分大小写，如果不给别名，就默认实体类类目首字母小写，其他不变，student-->
+    <typeAliases>
+<!--        <typeAlias type="com.zh.mybatis.entity.Student" alias="stu"/>-->
+    <!--告诉框架，哪些包下面可能会用到注解式别名-->
+     <package name="com.zh.mybatis.entity"/>
+
+    </typeAliases>
+
+    <environments default="development">
+        <!--数据库的环境-->
+        <environment id="development">
+            <transactionManager type="JDBC"></transactionManager>
+            <!--POOLED数据库连接池-->
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/teachingtest?useUnicode=true&amp;characterEncoding=utf8"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--注册SQL XXXMapper文件-->
+    <mappers>
+        <!--<mapper resource="BMMapper.xml"/>-->
+
+        <mapper class="com.zh.mybatis.mapper.StudentMapper"/>
+        <mapper class="com.zh.mybatis.mapper.ResumeMapper"/>
+    </mappers>
+</configuration>

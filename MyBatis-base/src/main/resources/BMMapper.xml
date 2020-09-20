@@ -1,0 +1,22 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bm">
+    <!--id 唯一标识-->
+    <select id="selectBM" resultType="com.zh.mybatis.entity.BM">
+        select bm_id as id,bm_name as name from t_bm
+    </select>
+    <!--添加部门
+parameterType参数类型    -->
+
+    <insert id="insertBM" parameterType="com.zh.mybatis.entity.BM">
+        insert into t_bm(bm_id,bm_name) values(#{id},#{name})
+    </insert>
+    <update id="updateBM" parameterType="com.zh.mybatis.entity.BM">
+        update t_bm set bm_name= '策划部' where  bm_id = 3 ;
+    </update>
+    <!--parameterType="int" 自己定义类型，然后测试单元也要同样的类型，最好和数据库字段类型一致-->
+    <delete id="deleteBM" parameterType="int">
+        delete from t_bm where bm_id=#{id}
+    </delete>
+</mapper>

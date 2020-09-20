@@ -1,0 +1,88 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace命名规范接口到包名路径-->
+<mapper namespace="com.zh.mybatis.mapper.StudentMapper">
+
+    <!--结果集 映射 , type 将学生的记录打包成学生的对象 type="com.zh.mybatis.entity.Student" ,也可以用别名-->
+    <resultMap id="stuMap" type="stu">
+        <!--id是特殊的字段，主键，配置主键（表）与ID属性（对象）映射 ，属性区分大小写并且要有setter/getter方法-->
+        <!--对象属性，表字段-->
+        <id property="stuId" column="stu_id"/>
+        <!--        <result property="name" column="name"/>-->
+        <!--        <result property="sex" column="sex" />  &lt;!&ndash;一一匹配，相同的不需要配置&ndash;&gt;-->
+        <result property="idCard" column="id_card"/>
+        <!--        <result property="subject" column="subject"/>-->
+        <!--        <result property="edu" column="edu"/>-->
+    </resultMap>
+
+    <resultMap id="stuMap2" type="stu">
+        <!--配置主键与ID属性映射-->
+        <result property="stuId" column="stu_id"/>
+        <result property="idCard" column="id_card"/>
+        <!-- 实体类属性 变量 private List<Resume> resumeList;
+        select="selectMyResume" namespace+对应id
+        javaType="java.util.List"  |private List<Resume> resumeList返回类型
+        -->
+        <collection property="resumeList" column="stu_id" select="com.zh.mybatis.mapper.ResumeMapper.selectMyResume"
+                    javaType="java.util.List"/>
+    </resultMap>
+    <!--id与mapper接口方法名相同，不同的话就调用不到，因为要匹配成功-->
+    <insert id="insertStudent">
+    insert into student(name,sex,id_card,subject,edu) values(#{name},#{sex},#{idCard},#{subject},#{edu})
+    </insert>
+<!--sql模板，简化代码，提高可重用行，可读性降低-->
+    <sql id="selectStudentTemplate">
+        select stu_id as stuId,name , sex, id_card as idCard ,edu,subject from student
+    </sql>
+    <select id="selectStudent" resultMap="stuMap" parameterType="int">
+    <include refid="selectStudentTemplate"/>
+    where stu_id = #{stuId}
+    </select>
+    <!--resultMap="stuMap"手动配的 resultType="stu"框架自动配的-->
+    <!-- <select id="selectList" resultType="stu">
+      select stu_id,name , sex,id_card  ,subject ,edu from student where sex = #{sex} and edu=#{edu}
+     </select>-->
+    <!--写成动态sql语句查询如下-->
+    <select id="selectList" resultType="stu">
+        <!--CDATA里面是普通字符-->
+        <![CDATA[
+ select stu_id as stuId,name , sex,id_card as idCard ,subject ,edu from student where 1=1
+        ]]>
+        <if test="sex!=null">
+            and sex = #{sex}
+        </if>
+        <if test="edu!=null">
+            and edu= #{edu}
+        </if>
+        <!--
+            /*选择语句*/
+                <choose>
+                    <when test="">
+
+                    </when>
+                </choose>-->
+    </select>
+
+    <select id="selectOneMoreResume" resultMap="stuMap2">
+        select stu_id ,name , sex, id_card ,edu,subject from student
+        where stu_id = #{stuId}
+    </select>
+
+    <select id="selectByKD" resultType="stu">
+        <include refid="selectStudentTemplate"/>
+        where name like '%${kd}%'
+        or subject like '%${kd}%'
+    </select>
+
+    <update id="updateStudent" parameterType="String">
+    update student set name = #{name} where stu_id = 3
+</update>
+
+   <!--分页-->
+    <select id="selectPage" resultType="stu" parameterType="Integer">
+        <include refid="selectStudentTemplate"/>
+        order by stu_id limit #{f},#{pageRows}
+    </select>
+
+</mapper>

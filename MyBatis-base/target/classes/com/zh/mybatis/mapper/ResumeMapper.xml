@@ -1,0 +1,42 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.mybatis.mapper.ResumeMapper">
+    <resultMap id="resumeMap" type="resume">
+        <id property="resId" column="res_id"/>
+        <result property="stuId" column="stu_id"/>
+        <result property="title" column="title"/>
+        <result property="lang" column="lang"/>
+        <!--关联，依据表结构，student学生对象属性，stu_id外键关联, javaType="stu"是实体类别名
+        select="com.zh.mybatis.mapper.StudentMapper.selectStudent" 对应xml的namespace-->
+        <association property="student" column="stu_id"
+                     select="com.zh.mybatis.mapper.StudentMapper.selectStudent"
+                     javaType="stu"
+        />
+    </resultMap>
+<!--根据简历id 查询它的其他信息-->
+    <select id="selectOne" resultMap="resumeMap" parameterType="int">
+     SELECT
+	res_id,
+	stu_id,
+	title,
+	lang
+FROM
+	resume
+WHERE
+	res_id =#{res_id}
+ </select>
+
+
+    <!--根据学生的ID 查询他的所有简历-->
+<select id="selectMyResume" resultType="resume">
+     select
+     res_id as resId,
+     stu_id as stuId,
+     title,
+     lang
+     from
+     resume
+     where stu_id = #{stu_id}
+</select>
+</mapper>
